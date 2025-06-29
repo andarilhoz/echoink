@@ -2,7 +2,7 @@ import os
 from PIL import Image
 
 # Flag: está rodando no Raspberry?
-ON_RASPBERRY = os.uname().machine.startswith("arm")  # armv7l, aarch64, etc.
+ON_RASPBERRY = os.uname().machine in ("armv7l", "aarch64")
 
 if ON_RASPBERRY:
     from waveshare_epd import epd2in13b_V4
