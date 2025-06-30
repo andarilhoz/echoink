@@ -127,6 +127,18 @@ def generate_matrix_glitch(width=250, height=122):
 
     return image
 
+def draw_static_image(width=250, height=122):
+    path = os.path.join("assets", "pitu.png")
+    try:
+        img = Image.open(path).convert("L")  # converte para escala de cinza
+        resample = getattr(Image, 'Resampling', Image).LANCZOS
+        img = img.resize((width, height), resample=resample)
+        # binariza (tudo acima de 128 vira branco, abaixo vira preto)
+        img = img.point(lambda x: 255 if x > 128 else 0, mode='1')
+        return img
+    except Exception as e:
+        print(f"[ERRO] Falha ao carregar imagem estática: {e}")
+        return Image.new("1", (width, height), 255)  # fallback branco
 
 def add_datetime_overlay(image):
     draw = ImageDraw.Draw(image)
@@ -159,6 +171,7 @@ GLITCH_FUNCTIONS = {
     "waveform": draw_waveform_image,
     "doppler": draw_doppler_image,
     "matrix": generate_matrix_glitch,
+    "static": draw_static_image
 }
 
 
@@ -203,3 +216,4 @@ def generate_glitch(width=250, height=122):
     glitch_func = GLITCH_FUNCTIONS.get(glitch_name, draw_noise_image)
     image = glitch_func(width, height)
     return add_datetime_overlay(image)
+
